@@ -14,7 +14,7 @@ jobs:
         project-template-esp32-c3.factory.yaml
         project-template-esp32-s3.factory.yaml
       esphome-version: 2024.10.3
-      combined-name: firmware
+      combined-name: project-template
       release-summary: ${{ github.event.release.body }}
       release-url: ${{ github.event.release.html_url }}
       release-version: ${{ github.event.release.tag_name }}
@@ -26,3 +26,50 @@ jobs:
       - build-firmware
     with:
       version: ${{ github.event.release.tag_name }}
+
+  upload-to-r2:
+    name: Upload to R2
+    uses: esphome/workflows/.github/workflows/upload-to-r2.yml@jesserockz-2024-527
+    needs:
+      - build-firmware
+    with:
+      directory: project-template
+    secrets: inherit
+
+  summary:
+    name: Generate Summary
+    runs-on: ubuntu-latest
+    needs:
+      - upload-to-r2
+    steps:
+      - name: Generate
+        run: |-
+          echo "## Firmware built successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[Install here](https://esphome.github.io/esphome-project-template-r2/?version=${{ github.event.release.tag_name }}) and test before approving deployment to beta or production." >> $GITHUB_STEP_SUMMARY
+
+
+  promote-beta:
+    name: Promote to Beta
+    uses: esphome/workflows/.github/workflows/promote-r2.yml@jesserockz-2024-527
+    needs:
+      - upload-to-r2
+    with:
+      version: ${{ github.event.release.tag_name }}
+      directory: project-template
+      channel: production
+      manifest-filename: manifest-beta.json
+    secrets: inherit
+
+  promote-prod:
+    name: Promote to Production
+    if: github.event.release.prerelease == false
+    uses: esphome/workflows/.github/workflows/promote-r2.yml@jesserockz-2024-527
+    needs:
+      - upload-to-r2
+    with:
+      version: ${{ github.event.release.tag_name }}
+      directory: project-template
+      channel: production
+      manifest-filename: manifest.json
+    secrets: inherit
