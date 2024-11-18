@@ -19,7 +19,7 @@ You can use the button below to install the pre-built firmware directly to your 
 
 <script>
   function setVersion(version) {
-    document.querySelector('h1#install_latest_version').innerHTML = `Install {{ site.title }} ${version}`;
+    document.querySelector('h1#install-latest-version').innerHTML = `Install {{ site.title }} ${version}`;
     document.querySelector('esp-web-install-button').manifest = `https://firmware.esphome.io/project-template/project-template/${version}/manifest.json`;
   }
 
