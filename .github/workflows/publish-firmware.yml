@@ -57,7 +57,7 @@ jobs:
     with:
       version: ${{ github.event.release.tag_name }}
       directory: project-template
-      channel: production
+      channel: beta
       manifest-filename: manifest-beta.json
     secrets: inherit
 
