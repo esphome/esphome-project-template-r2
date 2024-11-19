@@ -7,7 +7,7 @@ on:
 jobs:
   build-firmware:
     name: Build Firmware
-    uses: esphome/workflows/.github/workflows/build.yml@2024.11.0
+    uses: esphome/workflows/.github/workflows/build.yml@2024.11.1
     with:
       files: |
         project-template-esp32.factory.yaml
@@ -29,7 +29,7 @@ jobs:
 
   upload-to-r2:
     name: Upload to R2
-    uses: esphome/workflows/.github/workflows/upload-to-r2.yml@2024.11.0
+    uses: esphome/workflows/.github/workflows/upload-to-r2.yml@2024.11.1
     needs:
       - build-firmware
     with:
@@ -51,7 +51,7 @@ jobs:
 
   promote-beta:
     name: Promote to Beta
-    uses: esphome/workflows/.github/workflows/promote-r2.yml@2024.11.0
+    uses: esphome/workflows/.github/workflows/promote-r2.yml@2024.11.1
     needs:
       - upload-to-r2
     with:
@@ -64,7 +64,7 @@ jobs:
   promote-prod:
     name: Promote to Production
     if: github.event.release.prerelease == false
-    uses: esphome/workflows/.github/workflows/promote-r2.yml@2024.11.0
+    uses: esphome/workflows/.github/workflows/promote-r2.yml@2024.11.1
     needs:
       - upload-to-r2
     with:
